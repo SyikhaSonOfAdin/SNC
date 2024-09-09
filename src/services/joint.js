@@ -36,13 +36,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isometricServices = void 0;
-var isometric_1 = require("../models/isometric");
+exports.jointServices = void 0;
+var joint_1 = require("../models/joint");
 var db_1 = require("../config/db");
 var uuid_1 = require("uuid");
-exports.isometricServices = {
+exports.jointServices = {
     add: {
-        onlyOne: function (projectId, isoNo, lineNo, userId, connection) { return __awaiter(void 0, void 0, void 0, function () {
+        onlyOne: function (userId, jointNo, shopField, diameter, itemCode1, itemCode2, identCode1, identCode2, isoNo, connection) { return __awaiter(void 0, void 0, void 0, function () {
             var CONNECTION, _a, id, error_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -59,7 +59,7 @@ exports.isometricServices = {
                     case 3:
                         _b.trys.push([3, 5, 6, 7]);
                         id = (0, uuid_1.v4)();
-                        return [4 /*yield*/, CONNECTION.query(isometric_1.isometricQuerys.insert, [id, projectId, isoNo, lineNo, userId])];
+                        return [4 /*yield*/, CONNECTION.query(joint_1.jointQuerys.insert, [id, userId, jointNo, shopField, diameter, itemCode1, itemCode2, identCode1, identCode2, isoNo])];
                     case 4:
                         _b.sent();
                         return [3 /*break*/, 7];
@@ -75,8 +75,8 @@ exports.isometricServices = {
                 }
             });
         }); },
-        upload: function (projectId, userId, arrayOfData, connection) { return __awaiter(void 0, void 0, void 0, function () {
-            var CONNECTION, _a, errorLog, errorOccured, error_2;
+        upload: function (userId, arrayOfData, connection) { return __awaiter(void 0, void 0, void 0, function () {
+            var CONNECTION, _a, errorOccured, errorLog, error_2;
             return __generator(this, function (_b) {
                 switch (_b.label) {
                     case 0:
@@ -88,8 +88,8 @@ exports.isometricServices = {
                         _b.label = 2;
                     case 2:
                         CONNECTION = _a;
-                        errorLog = [];
                         errorOccured = 0;
+                        errorLog = [];
                         _b.label = 3;
                     case 3:
                         _b.trys.push([3, 5, 6, 7]);
@@ -100,7 +100,18 @@ exports.isometricServices = {
                                         case 0:
                                             _a.trys.push([0, 2, , 3]);
                                             id = (0, uuid_1.v4)();
-                                            return [4 /*yield*/, CONNECTION.query(isometric_1.isometricQuerys.insert, [id, projectId, items.ISO_NO, items.LINE_NO, userId])];
+                                            return [4 /*yield*/, CONNECTION.query(joint_1.jointQuerys.insert, [
+                                                    id,
+                                                    userId,
+                                                    items.JOINT_NO,
+                                                    items["S/F"],
+                                                    items.DB,
+                                                    items.ITEM_CODE1,
+                                                    items.ITEM_CODE2,
+                                                    items.IDENT_CODE1,
+                                                    items.IDENT_CODE2,
+                                                    items.ISO_NO,
+                                                ])];
                                         case 1:
                                             _a.sent();
                                             return [3 /*break*/, 3];
@@ -115,8 +126,8 @@ exports.isometricServices = {
                     case 4:
                         _b.sent();
                         return [2 /*return*/, {
-                                successRate: (arrayOfData.length - errorOccured) / arrayOfData.length * 100,
-                                errorLog: errorLog
+                                successRate: ((arrayOfData.length - errorOccured) / arrayOfData.length) * 100,
+                                errorLog: errorLog,
                             }];
                     case 5:
                         error_2 = _b.sent();
@@ -129,7 +140,7 @@ exports.isometricServices = {
                     case 7: return [2 /*return*/];
                 }
             });
-        }); }
+        }); },
     },
     delete: {
         all: function (projectId, connection) { return __awaiter(void 0, void 0, void 0, function () {
@@ -148,7 +159,7 @@ exports.isometricServices = {
                         _b.label = 3;
                     case 3:
                         _b.trys.push([3, 5, 6, 7]);
-                        return [4 /*yield*/, CONNECTION.query(isometric_1.isometricQuerys.delete.all, [projectId])];
+                        return [4 /*yield*/, CONNECTION.query(joint_1.jointQuerys.delete.all, [projectId])];
                     case 4:
                         _b.sent();
                         return [3 /*break*/, 7];
@@ -164,7 +175,7 @@ exports.isometricServices = {
                 }
             });
         }); },
-        onlyOne: function (isometricId, connection) { return __awaiter(void 0, void 0, void 0, function () {
+        onlyOne: function (jointId, connection) { return __awaiter(void 0, void 0, void 0, function () {
             var CONNECTION, _a, error_5;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -180,7 +191,7 @@ exports.isometricServices = {
                         _b.label = 3;
                     case 3:
                         _b.trys.push([3, 5, 6, 7]);
-                        return [4 /*yield*/, CONNECTION.query(isometric_1.isometricQuerys.delete.onlyOne, [isometricId])];
+                        return [4 /*yield*/, CONNECTION.query(joint_1.jointQuerys.delete.onlyOne, [jointId])];
                     case 4:
                         _b.sent();
                         return [3 /*break*/, 7];
@@ -195,41 +206,41 @@ exports.isometricServices = {
                     case 7: return [2 /*return*/];
                 }
             });
-        }); }
+        }); },
+        perIsometric: function (isometricId, connection) { return __awaiter(void 0, void 0, void 0, function () {
+            var CONNECTION, _a, error_6;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = connection;
+                        if (_a) return [3 /*break*/, 2];
+                        return [4 /*yield*/, db_1.SNC.getConnection()];
+                    case 1:
+                        _a = (_b.sent());
+                        _b.label = 2;
+                    case 2:
+                        CONNECTION = _a;
+                        _b.label = 3;
+                    case 3:
+                        _b.trys.push([3, 5, 6, 7]);
+                        return [4 /*yield*/, CONNECTION.query(joint_1.jointQuerys.delete.perIsometric, [isometricId])];
+                    case 4:
+                        _b.sent();
+                        return [3 /*break*/, 7];
+                    case 5:
+                        error_6 = _b.sent();
+                        throw error_6;
+                    case 6:
+                        if (!connection && CONNECTION) {
+                            CONNECTION.release();
+                        }
+                        return [7 /*endfinally*/];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        }); },
     },
-    edit: function (isoNo, lineNo, userId, isoId, connection) { return __awaiter(void 0, void 0, void 0, function () {
-        var CONNECTION, _a, error_6;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _a = connection;
-                    if (_a) return [3 /*break*/, 2];
-                    return [4 /*yield*/, db_1.SNC.getConnection()];
-                case 1:
-                    _a = (_b.sent());
-                    _b.label = 2;
-                case 2:
-                    CONNECTION = _a;
-                    _b.label = 3;
-                case 3:
-                    _b.trys.push([3, 5, 6, 7]);
-                    return [4 /*yield*/, CONNECTION.query(isometric_1.isometricQuerys.update, [isoNo, lineNo, userId, isoId])];
-                case 4:
-                    _b.sent();
-                    return [3 /*break*/, 7];
-                case 5:
-                    error_6 = _b.sent();
-                    throw error_6;
-                case 6:
-                    if (!connection && CONNECTION) {
-                        CONNECTION.release();
-                    }
-                    return [7 /*endfinally*/];
-                case 7: return [2 /*return*/];
-            }
-        });
-    }); },
-    get: function (projectId, page, perPage, connection) { return __awaiter(void 0, void 0, void 0, function () {
+    get: function (isometricId, connection) { return __awaiter(void 0, void 0, void 0, function () {
         var CONNECTION, _a, data, error_7;
         return __generator(this, function (_b) {
             switch (_b.label) {
@@ -245,7 +256,7 @@ exports.isometricServices = {
                     _b.label = 3;
                 case 3:
                     _b.trys.push([3, 5, 6, 7]);
-                    return [4 /*yield*/, CONNECTION.query(isometric_1.isometricQuerys.get, [projectId, perPage, page * perPage])];
+                    return [4 /*yield*/, CONNECTION.query(joint_1.jointQuerys.get, [isometricId])];
                 case 4:
                     data = (_b.sent())[0];
                     return [2 /*return*/, data];
@@ -260,5 +271,5 @@ exports.isometricServices = {
                 case 7: return [2 /*return*/];
             }
         });
-    }); }
+    }); },
 };

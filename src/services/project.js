@@ -36,94 +36,13 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.userServices = void 0;
-var user_1 = require("../models/user");
+exports.projectServices = void 0;
 var db_1 = require("../config/db");
-var argon2 = require("argon2");
+var project_1 = require("../models/project");
 var uuid_1 = require("uuid");
-exports.userServices = {
-    add: function (companyId, projectId, username, email, password, level, connection) { return __awaiter(void 0, void 0, void 0, function () {
-        var CONNECTION, _a, id, hashedPassword, error_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _a = connection;
-                    if (_a) return [3 /*break*/, 2];
-                    return [4 /*yield*/, db_1.SNC.getConnection()];
-                case 1:
-                    _a = (_b.sent());
-                    _b.label = 2;
-                case 2:
-                    CONNECTION = _a;
-                    _b.label = 3;
-                case 3:
-                    _b.trys.push([3, 6, 7, 8]);
-                    id = (0, uuid_1.v4)();
-                    return [4 /*yield*/, argon2.hash(password)];
-                case 4:
-                    hashedPassword = _b.sent();
-                    return [4 /*yield*/, CONNECTION.query(user_1.userQuerys.insert, [id, companyId, projectId, username, email, hashedPassword, level])];
-                case 5:
-                    _b.sent();
-                    return [2 /*return*/, id];
-                case 6:
-                    error_1 = _b.sent();
-                    throw error_1;
-                case 7:
-                    if (!connection && CONNECTION) {
-                        CONNECTION.release();
-                    }
-                    return [7 /*endfinally*/];
-                case 8: return [2 /*return*/];
-            }
-        });
-    }); },
-    login: function (email, password, connection) { return __awaiter(void 0, void 0, void 0, function () {
-        var CONNECTION, _a, isExist, user, isMatch, error_2;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _a = connection;
-                    if (_a) return [3 /*break*/, 2];
-                    return [4 /*yield*/, db_1.SNC.getConnection()];
-                case 1:
-                    _a = (_b.sent());
-                    _b.label = 2;
-                case 2:
-                    CONNECTION = _a;
-                    _b.label = 3;
-                case 3:
-                    _b.trys.push([3, 7, 8, 9]);
-                    return [4 /*yield*/, CONNECTION.query(user_1.userQuerys.get.all, [email])];
-                case 4:
-                    isExist = (_b.sent())[0];
-                    if (!(isExist.length > 0)) return [3 /*break*/, 6];
-                    user = isExist[0];
-                    return [4 /*yield*/, argon2.verify(user.PASSWORD, password)];
-                case 5:
-                    isMatch = _b.sent();
-                    if (isMatch) {
-                        return [2 /*return*/, user];
-                    }
-                    else {
-                        return [2 /*return*/, null];
-                    }
-                    _b.label = 6;
-                case 6: return [3 /*break*/, 9];
-                case 7:
-                    error_2 = _b.sent();
-                    throw error_2;
-                case 8:
-                    if (!connection && CONNECTION) {
-                        CONNECTION.release();
-                    }
-                    return [7 /*endfinally*/];
-                case 9: return [2 /*return*/, null];
-            }
-        });
-    }); },
-    delete: function (userId, connection) { return __awaiter(void 0, void 0, void 0, function () {
-        var CONNECTION, _a, error_3;
+exports.projectServices = {
+    add: function (companyId, name, desc, userId, connection) { return __awaiter(void 0, void 0, void 0, function () {
+        var CONNECTION, _a, id, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -138,13 +57,46 @@ exports.userServices = {
                     _b.label = 3;
                 case 3:
                     _b.trys.push([3, 5, 6, 7]);
-                    return [4 /*yield*/, CONNECTION.query(user_1.userQuerys.delete, [userId])];
+                    id = (0, uuid_1.v4)();
+                    return [4 /*yield*/, CONNECTION.query(project_1.projectQuerys.insert, [id, companyId, name, desc, userId])];
                 case 4:
                     _b.sent();
                     return [3 /*break*/, 7];
                 case 5:
-                    error_3 = _b.sent();
-                    throw error_3;
+                    error_1 = _b.sent();
+                    throw error_1;
+                case 6:
+                    if (!connection && CONNECTION) {
+                        CONNECTION.release();
+                    }
+                    return [7 /*endfinally*/];
+                case 7: return [2 /*return*/];
+            }
+        });
+    }); },
+    edit: function (projectId, name, desc, status, userId, connection) { return __awaiter(void 0, void 0, void 0, function () {
+        var CONNECTION, _a, error_2;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _a = connection;
+                    if (_a) return [3 /*break*/, 2];
+                    return [4 /*yield*/, db_1.SNC.getConnection()];
+                case 1:
+                    _a = (_b.sent());
+                    _b.label = 2;
+                case 2:
+                    CONNECTION = _a;
+                    _b.label = 3;
+                case 3:
+                    _b.trys.push([3, 5, 6, 7]);
+                    return [4 /*yield*/, CONNECTION.query(project_1.projectQuerys.update.all, [name, desc, userId, status, projectId])];
+                case 4:
+                    _b.sent();
+                    return [3 /*break*/, 7];
+                case 5:
+                    error_2 = _b.sent();
+                    throw error_2;
                 case 6:
                     if (!connection && CONNECTION) {
                         CONNECTION.release();
