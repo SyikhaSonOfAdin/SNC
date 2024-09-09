@@ -37,8 +37,8 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.projectServices = void 0;
-var db_1 = require("../config/db");
 var project_1 = require("../models/project");
+var db_1 = require("../config/db");
 var uuid_1 = require("uuid");
 exports.projectServices = {
     add: function (companyId, name, desc, userId, connection) { return __awaiter(void 0, void 0, void 0, function () {
@@ -61,7 +61,7 @@ exports.projectServices = {
                     return [4 /*yield*/, CONNECTION.query(project_1.projectQuerys.insert, [id, companyId, name, desc, userId])];
                 case 4:
                     _b.sent();
-                    return [3 /*break*/, 7];
+                    return [2 /*return*/, id];
                 case 5:
                     error_1 = _b.sent();
                     throw error_1;
@@ -105,5 +105,37 @@ exports.projectServices = {
                 case 7: return [2 /*return*/];
             }
         });
-    }); }
+    }); },
+    delete: {
+        onlyOne: function (projectId, connection) { return __awaiter(void 0, void 0, void 0, function () {
+            var CONNECTION, _a, error_3;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = connection;
+                        if (_a) return [3 /*break*/, 2];
+                        return [4 /*yield*/, db_1.SNC.getConnection()];
+                    case 1:
+                        _a = (_b.sent());
+                        _b.label = 2;
+                    case 2:
+                        CONNECTION = _a;
+                        _b.label = 3;
+                    case 3:
+                        _b.trys.push([3, 5, 6, 7]);
+                        return [4 /*yield*/, CONNECTION.query(project_1.projectQuerys.delete.onlyOne, [projectId])];
+                    case 4:
+                        _b.sent();
+                        return [3 /*break*/, 7];
+                    case 5:
+                        error_3 = _b.sent();
+                        throw error_3;
+                    case 6:
+                        CONNECTION.release();
+                        return [7 /*endfinally*/];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        }); }
+    }
 };

@@ -3,7 +3,7 @@ const table = {
     COLUMN: {
         ID: "ID",
         NAME: "NAME",
-        DESC: "DESC",
+        DESCRIPTION: "DESCRIPTION",
     }
 }
 

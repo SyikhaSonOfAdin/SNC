@@ -3,6 +3,9 @@ const { companyRouter } = require('./routes/company');
 const express = require('express');
 const path = require('path');
 const cors = require('cors');
+const { userRouter } = require('./routes/user');
+const { projectRouter } = require('./routes/project');
+const { isometricRouter } = require('./routes/isometric');
 
 const app = express();
 const port = 3000;
@@ -17,10 +20,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(__dirname, '')));
 
-app.get('/', (req, res) => {
-    res.send('<h1>Hi Your API is Available🚀</h1>')
-})
+app.use("/isometric", isometricRouter)
 app.use("/company", companyRouter)
+app.use("/project", projectRouter)
+app.use("/user", userRouter)
 
 app.listen(process.env.PORT || port, () => {
     console.log(`Server berjalan di port ${port} on http://localhost:${port}`);

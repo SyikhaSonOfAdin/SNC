@@ -42,7 +42,7 @@ var db_1 = require("../config/db");
 var argon2 = require("argon2");
 var uuid_1 = require("uuid");
 exports.userServices = {
-    add: function (companyId, projectId, username, email, password, level, connection) { return __awaiter(void 0, void 0, void 0, function () {
+    add: function (companyId, projectId, username, email, password, connection) { return __awaiter(void 0, void 0, void 0, function () {
         var CONNECTION, _a, id, hashedPassword, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
@@ -62,7 +62,7 @@ exports.userServices = {
                     return [4 /*yield*/, argon2.hash(password)];
                 case 4:
                     hashedPassword = _b.sent();
-                    return [4 /*yield*/, CONNECTION.query(user_1.userQuerys.insert, [id, companyId, projectId, username, email, hashedPassword, level])];
+                    return [4 /*yield*/, CONNECTION.query(user_1.userQuerys.insert, [id, companyId, projectId, username, email, hashedPassword])];
                 case 5:
                     _b.sent();
                     return [2 /*return*/, id];
@@ -78,50 +78,42 @@ exports.userServices = {
             }
         });
     }); },
-    login: function (email, password, connection) { return __awaiter(void 0, void 0, void 0, function () {
-        var CONNECTION, _a, isExist, user, isMatch, error_2;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _a = connection;
-                    if (_a) return [3 /*break*/, 2];
-                    return [4 /*yield*/, db_1.SNC.getConnection()];
-                case 1:
-                    _a = (_b.sent());
-                    _b.label = 2;
-                case 2:
-                    CONNECTION = _a;
-                    _b.label = 3;
-                case 3:
-                    _b.trys.push([3, 7, 8, 9]);
-                    return [4 /*yield*/, CONNECTION.query(user_1.userQuerys.get.all, [email])];
-                case 4:
-                    isExist = (_b.sent())[0];
-                    if (!(isExist.length > 0)) return [3 /*break*/, 6];
-                    user = isExist[0];
-                    return [4 /*yield*/, argon2.verify(user.PASSWORD, password)];
-                case 5:
-                    isMatch = _b.sent();
-                    if (isMatch) {
-                        return [2 /*return*/, user];
-                    }
-                    else {
-                        return [2 /*return*/, null];
-                    }
-                    _b.label = 6;
-                case 6: return [3 /*break*/, 9];
-                case 7:
-                    error_2 = _b.sent();
-                    throw error_2;
-                case 8:
-                    if (!connection && CONNECTION) {
-                        CONNECTION.release();
-                    }
-                    return [7 /*endfinally*/];
-                case 9: return [2 /*return*/, null];
-            }
-        });
-    }); },
+    check: {
+        email: function (email, connection) { return __awaiter(void 0, void 0, void 0, function () {
+            var CONNECTION, _a, data, error_2;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = connection;
+                        if (_a) return [3 /*break*/, 2];
+                        return [4 /*yield*/, db_1.SNC.getConnection()];
+                    case 1:
+                        _a = (_b.sent());
+                        _b.label = 2;
+                    case 2:
+                        CONNECTION = _a;
+                        _b.label = 3;
+                    case 3:
+                        _b.trys.push([3, 5, 6, 7]);
+                        return [4 /*yield*/, CONNECTION.query(user_1.userQuerys.get.onlyOne.email.byEmail, [email])];
+                    case 4:
+                        data = (_b.sent())[0];
+                        if (data.length > 0)
+                            return [2 /*return*/, true];
+                        return [2 /*return*/, false];
+                    case 5:
+                        error_2 = _b.sent();
+                        throw error_2;
+                    case 6:
+                        if (!connection && CONNECTION) {
+                            CONNECTION.release();
+                        }
+                        return [7 /*endfinally*/];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        }); }
+    },
     delete: function (userId, connection) { return __awaiter(void 0, void 0, void 0, function () {
         var CONNECTION, _a, error_3;
         return __generator(this, function (_b) {
@@ -153,5 +145,50 @@ exports.userServices = {
                 case 7: return [2 /*return*/];
             }
         });
-    }); }
+    }); },
+    login: function (email, password, connection) { return __awaiter(void 0, void 0, void 0, function () {
+        var CONNECTION, _a, isExist, user, isMatch, error_4;
+        return __generator(this, function (_b) {
+            switch (_b.label) {
+                case 0:
+                    _a = connection;
+                    if (_a) return [3 /*break*/, 2];
+                    return [4 /*yield*/, db_1.SNC.getConnection()];
+                case 1:
+                    _a = (_b.sent());
+                    _b.label = 2;
+                case 2:
+                    CONNECTION = _a;
+                    _b.label = 3;
+                case 3:
+                    _b.trys.push([3, 8, 9, 10]);
+                    return [4 /*yield*/, CONNECTION.query(user_1.userQuerys.get.onlyOne.all.byEmail, [email])];
+                case 4:
+                    isExist = (_b.sent())[0];
+                    if (!(isExist.length > 0)) return [3 /*break*/, 6];
+                    user = isExist[0];
+                    return [4 /*yield*/, argon2.verify(user.PASSWORD, password)];
+                case 5:
+                    isMatch = _b.sent();
+                    if (isMatch) {
+                        return [2 /*return*/, user];
+                    }
+                    else {
+                        return [2 /*return*/, "Invalid email or password"];
+                    }
+                    return [3 /*break*/, 7];
+                case 6: return [2 /*return*/, "Email not found"];
+                case 7: return [3 /*break*/, 10];
+                case 8:
+                    error_4 = _b.sent();
+                    throw error_4;
+                case 9:
+                    if (!connection && CONNECTION) {
+                        CONNECTION.release();
+                    }
+                    return [7 /*endfinally*/];
+                case 10: return [2 /*return*/];
+            }
+        });
+    }); },
 };

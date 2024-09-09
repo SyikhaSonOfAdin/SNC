@@ -107,7 +107,7 @@ exports.privilegeServices = {
                 }
             });
         }); },
-        onlyOne: function (userId, permissionName, connection) { return __awaiter(void 0, void 0, void 0, function () {
+        onlyOne: function (userId, permissionId, connection) { return __awaiter(void 0, void 0, void 0, function () {
             var CONNECTION, _a, error_3;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -123,7 +123,7 @@ exports.privilegeServices = {
                         _b.label = 3;
                     case 3:
                         _b.trys.push([3, 5, 6, 7]);
-                        return [4 /*yield*/, CONNECTION.query(privilege_1.privilegeQuerys.delete.onlyOne, [userId, permissionName])];
+                        return [4 /*yield*/, CONNECTION.query(privilege_1.privilegeQuerys.delete.onlyOne, [userId, permissionId])];
                     case 4:
                         _b.sent();
                         return [3 /*break*/, 7];

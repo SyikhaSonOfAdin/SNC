@@ -36,40 +36,41 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
     }
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.permissionServices = void 0;
-var permissions_1 = require("../models/permissions");
-var db_1 = require("../config/db");
-exports.permissionServices = {
-    get: function (connection) { return __awaiter(void 0, void 0, void 0, function () {
-        var CONNECTION, _a, data, permissions, error_1;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
+exports.emailServices = void 0;
+var nodemailer = require("nodemailer");
+var transporter = nodemailer.createTransport({
+    host: process.env.EMAIL_HOST,
+    port: 465,
+    secure: true,
+    auth: {
+        user: process.env.EMAIL_HOST_USER,
+        pass: process.env.PASSWORD,
+    },
+});
+exports.emailServices = {
+    sendEmail: function (to, subject, text, html) { return __awaiter(void 0, void 0, void 0, function () {
+        var options, info, error_1;
+        return __generator(this, function (_a) {
+            switch (_a.label) {
                 case 0:
-                    _a = connection;
-                    if (_a) return [3 /*break*/, 2];
-                    return [4 /*yield*/, db_1.SNC.getConnection()];
+                    options = {
+                        from: process.env.EMAIL_HOST_USER,
+                        to: to,
+                        subject: subject,
+                        text: text,
+                        html: html
+                    };
+                    _a.label = 1;
                 case 1:
-                    _a = (_b.sent());
-                    _b.label = 2;
+                    _a.trys.push([1, 3, , 4]);
+                    return [4 /*yield*/, transporter.sendMail(options)];
                 case 2:
-                    CONNECTION = _a;
-                    _b.label = 3;
+                    info = _a.sent();
+                    return [2 /*return*/, info];
                 case 3:
-                    _b.trys.push([3, 5, 6, 7]);
-                    return [4 /*yield*/, CONNECTION.query(permissions_1.permissionsQuerys.get)];
-                case 4:
-                    data = (_b.sent())[0];
-                    permissions = data;
-                    return [2 /*return*/, permissions];
-                case 5:
-                    error_1 = _b.sent();
-                    throw error_1;
-                case 6:
-                    if (!connection && CONNECTION) {
-                        CONNECTION.release();
-                    }
-                    return [7 /*endfinally*/];
-                case 7: return [2 /*return*/];
+                    error_1 = _a.sent();
+                    throw new Error("Failed to send email: ".concat(error_1.message));
+                case 4: return [2 /*return*/];
             }
         });
     }); }

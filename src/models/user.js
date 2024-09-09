@@ -13,7 +13,14 @@ const table = {
 
 const QUERY = {
     get: {
-        onlyOne: `SELECT * FROM ${table.TABLE} WHERE ${table.COLUMN.EMAIL} = ?`,
+        onlyOne: {
+            all: {
+                byEmail: `SELECT * FROM ${table.TABLE} WHERE ${table.COLUMN.EMAIL} = ?`
+            },
+            email: {
+                byEmail: `SELECT ${table.COLUMN.EMAIL} FROM ${table.TABLE} WHERE ${table.COLUMN.EMAIL} = ?`
+            }
+        },
     },
     insert : `INSERT INTO ${table.TABLE} (${table.COLUMN.ID}, ${table.COLUMN.COMPANY_ID}, ${table.COLUMN.PROJECT_ID}, ${table.COLUMN.USERNAME}, ${table.COLUMN.EMAIL}, ${table.COLUMN.PASSWORD}) VALUES (?,?,?,?,?,?)`,
     delete: `DELETE FROM ${table.TABLE} WHERE ${table.COLUMN.ID} = ?`,

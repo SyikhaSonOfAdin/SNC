@@ -42,11 +42,10 @@ var uuid_1 = require("uuid");
 var db_1 = require("../config/db");
 exports.companyServices = {
     add: function (name, connection) { return __awaiter(void 0, void 0, void 0, function () {
-        var CONNECTIONS, id, _a, error_1;
+        var CONNECTIONS, _a, id, error_1;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
-                    id = (0, uuid_1.v4)();
                     _a = connection;
                     if (_a) return [3 /*break*/, 2];
                     return [4 /*yield*/, db_1.SNC.getConnection()];
@@ -58,10 +57,11 @@ exports.companyServices = {
                     _b.label = 3;
                 case 3:
                     _b.trys.push([3, 5, 6, 7]);
+                    id = (0, uuid_1.v4)();
                     return [4 /*yield*/, CONNECTIONS.query(companyTable_1.companyQuerys.insert, [id, name])];
                 case 4:
                     _b.sent();
-                    return [3 /*break*/, 7];
+                    return [2 /*return*/, id];
                 case 5:
                     error_1 = _b.sent();
                     throw error_1;
@@ -74,55 +74,74 @@ exports.companyServices = {
             }
         });
     }); },
-    edit: function (id, name, status, connection) { return __awaiter(void 0, void 0, void 0, function () {
-        var CONNECTIONS, _a, error_2;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _a = connection;
-                    if (_a) return [3 /*break*/, 2];
-                    return [4 /*yield*/, db_1.SNC.getConnection()];
-                case 1:
-                    _a = (_b.sent());
-                    _b.label = 2;
-                case 2:
-                    CONNECTIONS = _a;
-                    _b.label = 3;
-                case 3:
-                    _b.trys.push([3, 11, 12, 13]);
-                    if (!(name && status)) return [3 /*break*/, 5];
-                    return [4 /*yield*/, CONNECTIONS.query(companyTable_1.companyQuerys.update.both, [name, status, id])];
-                case 4:
-                    _b.sent();
-                    return [3 /*break*/, 10];
-                case 5:
-                    if (!name) return [3 /*break*/, 7];
-                    return [4 /*yield*/, CONNECTIONS.query(companyTable_1.companyQuerys.update.name, [name, id])];
-                case 6:
-                    _b.sent();
-                    return [3 /*break*/, 10];
-                case 7:
-                    if (!status) return [3 /*break*/, 9];
-                    return [4 /*yield*/, CONNECTIONS.query(companyTable_1.companyQuerys.update.status, [status, id])];
-                case 8:
-                    _b.sent();
-                    return [3 /*break*/, 10];
-                case 9: throw new Error("No fields to update");
-                case 10: return [3 /*break*/, 13];
-                case 11:
-                    error_2 = _b.sent();
-                    throw error_2;
-                case 12:
-                    if (!connection && CONNECTIONS) {
-                        CONNECTIONS.release();
-                    }
-                    return [7 /*endfinally*/];
-                case 13: return [2 /*return*/];
-            }
-        });
-    }); },
+    edit: {
+        name: function (id, name, connection) { return __awaiter(void 0, void 0, void 0, function () {
+            var CONNECTION, _a, error_2;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = connection;
+                        if (_a) return [3 /*break*/, 2];
+                        return [4 /*yield*/, db_1.SNC.getConnection()];
+                    case 1:
+                        _a = (_b.sent());
+                        _b.label = 2;
+                    case 2:
+                        CONNECTION = _a;
+                        _b.label = 3;
+                    case 3:
+                        _b.trys.push([3, 5, 6, 7]);
+                        return [4 /*yield*/, CONNECTION.query(companyTable_1.companyQuerys.update.name, [name, id])];
+                    case 4:
+                        _b.sent();
+                        return [3 /*break*/, 7];
+                    case 5:
+                        error_2 = _b.sent();
+                        throw error_2;
+                    case 6:
+                        if (!connection && CONNECTION) {
+                            CONNECTION.release();
+                        }
+                        return [7 /*endfinally*/];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        }); },
+        status: function (id, status, connection) { return __awaiter(void 0, void 0, void 0, function () {
+            var CONNECTION, _a, error_3;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = connection;
+                        if (_a) return [3 /*break*/, 2];
+                        return [4 /*yield*/, db_1.SNC.getConnection()];
+                    case 1:
+                        _a = (_b.sent());
+                        _b.label = 2;
+                    case 2:
+                        CONNECTION = _a;
+                        _b.label = 3;
+                    case 3:
+                        _b.trys.push([3, 5, 6, 7]);
+                        return [4 /*yield*/, CONNECTION.query(companyTable_1.companyQuerys.update.status, [status, id])];
+                    case 4:
+                        _b.sent();
+                        return [3 /*break*/, 7];
+                    case 5:
+                        error_3 = _b.sent();
+                        throw error_3;
+                    case 6:
+                        if (!connection && CONNECTION) {
+                            CONNECTION.release();
+                        }
+                        return [7 /*endfinally*/];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        }); }
+    },
     delete: function (id, connection) { return __awaiter(void 0, void 0, void 0, function () {
-        var CONNECTIONS, _a, error_3;
+        var CONNECTIONS, _a, error_4;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -142,8 +161,8 @@ exports.companyServices = {
                     _b.sent();
                     return [3 /*break*/, 7];
                 case 5:
-                    error_3 = _b.sent();
-                    throw error_3;
+                    error_4 = _b.sent();
+                    throw error_4;
                 case 6:
                     if (!connection && CONNECTIONS) {
                         CONNECTIONS.release();
