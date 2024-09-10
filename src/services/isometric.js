@@ -92,41 +92,51 @@ exports.isometricServices = {
                         errorOccured = 0;
                         _b.label = 3;
                     case 3:
-                        _b.trys.push([3, 5, 6, 7]);
-                        return [4 /*yield*/, Promise.all(arrayOfData.map(function (items) { return __awaiter(void 0, void 0, void 0, function () {
-                                var id, error_3;
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0:
-                                            _a.trys.push([0, 2, , 3]);
-                                            id = (0, uuid_1.v4)();
-                                            return [4 /*yield*/, CONNECTION.query(isometric_1.isometricQuerys.insert, [id, projectId, items.ISO_NO, items.LINE_NO, userId])];
-                                        case 1:
-                                            _a.sent();
-                                            return [3 /*break*/, 3];
-                                        case 2:
-                                            error_3 = _a.sent();
-                                            errorLog.push({ no: errorOccured++, message: error_3.message });
-                                            return [3 /*break*/, 3];
-                                        case 3: return [2 /*return*/];
-                                    }
-                                });
-                            }); }))];
+                        _b.trys.push([3, 9, 10, 11]);
+                        if (!!connection) return [3 /*break*/, 5];
+                        return [4 /*yield*/, CONNECTION.beginTransaction()];
                     case 4:
                         _b.sent();
-                        return [2 /*return*/, {
-                                successRate: (arrayOfData.length - errorOccured) / arrayOfData.length * 100,
-                                errorLog: errorLog
-                            }];
-                    case 5:
+                        _b.label = 5;
+                    case 5: return [4 /*yield*/, Promise.all(arrayOfData.map(function (items) { return __awaiter(void 0, void 0, void 0, function () {
+                            var id, error_3;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        _a.trys.push([0, 2, , 3]);
+                                        id = (0, uuid_1.v4)();
+                                        return [4 /*yield*/, CONNECTION.query(isometric_1.isometricQuerys.insert, [id, projectId, items.ISO_NO, items.LINE_NO, userId])];
+                                    case 1:
+                                        _a.sent();
+                                        return [3 /*break*/, 3];
+                                    case 2:
+                                        error_3 = _a.sent();
+                                        errorLog.push({ no: errorOccured++, message: error_3.message });
+                                        return [3 /*break*/, 3];
+                                    case 3: return [2 /*return*/];
+                                }
+                            });
+                        }); }))];
+                    case 6:
+                        _b.sent();
+                        if (!!connection) return [3 /*break*/, 8];
+                        return [4 /*yield*/, CONNECTION.commit()];
+                    case 7:
+                        _b.sent();
+                        _b.label = 8;
+                    case 8: return [2 /*return*/, {
+                            successRate: "".concat(((arrayOfData.length - errorOccured) / arrayOfData.length * 100).toFixed(2), "%"),
+                            // errorLog
+                        }];
+                    case 9:
                         error_2 = _b.sent();
                         throw error_2;
-                    case 6:
+                    case 10:
                         if (!connection && CONNECTION) {
                             CONNECTION.release();
                         }
                         return [7 /*endfinally*/];
-                    case 7: return [2 /*return*/];
+                    case 11: return [2 /*return*/];
                 }
             });
         }); }

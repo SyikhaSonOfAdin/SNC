@@ -21,7 +21,7 @@ const table = {
  
 const QUERY = {
     get: `SELECT LI.${table.COLUMN.ID}, LI.${table.COLUMN.ISO_NO}, LI.${table.COLUMN.LINE_NO}, DATE_FORMAT(LI.${table.COLUMN.INPUT_DATE}, '%Y-%d-%m') AS INPUT_DATE, U.${userTable.COLUMN.USERNAME} AS INPUT_BY FROM ${table.TABLE} AS LI JOIN ${userTable.TABLE} AS U ON ${table.COLUMN.INPUT_BY} = ${userTable.COLUMN.ID} WHERE LI.${table.COLUMN.PROJECT_ID} = ? LIMIT ? OFFSET ?`,
-    insert: `INSERT IGNORE INTO ${table.TABLE} (${table.COLUMN.ID}, ${table.COLUMN.PROJECT_ID}, ${table.COLUMN.ISO_NO}, ${table.COLUMN.LINE_NO}, ${table.COLUMN.INPUT_BY}) VALUES (?,?,?,?,?)`,
+    insert: `INSERT INTO ${table.TABLE} (${table.COLUMN.ID}, ${table.COLUMN.PROJECT_ID}, ${table.COLUMN.ISO_NO}, ${table.COLUMN.LINE_NO}, ${table.COLUMN.INPUT_BY}) VALUES (?,?,?,?,?) ON DUPLICATE KEY UPDATE ${table.COLUMN.INPUT_BY} = VALUES(${table.COLUMN.INPUT_BY}), ${table.COLUMN.INPUT_DATE} = NOW(), ${table.COLUMN.LINE_NO} = VALUES(${table.COLUMN.LINE_NO})`,
     update: `UPDATE ${table.TABLE} SET ${table.COLUMN.ISO_NO} = ?, ${table.COLUMN.LINE_NO} = ?, ${table.COLUMN.INPUT_BY} = ?, ${table.COLUMN.INPUT_DATE} = ? WHERE ${table.COLUMN.ID} = ?`,
     delete: {
         all: `DELETE FROM ${table.TABLE} WHERE ${table.COLUMN.PROJECT_ID} = ?`,

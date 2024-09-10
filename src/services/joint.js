@@ -42,7 +42,7 @@ var db_1 = require("../config/db");
 var uuid_1 = require("uuid");
 exports.jointServices = {
     add: {
-        onlyOne: function (userId, jointNo, shopField, diameter, itemCode1, itemCode2, identCode1, identCode2, isoNo, connection) { return __awaiter(void 0, void 0, void 0, function () {
+        onlyOne: function (projectId, userId, jointNo, shopField, diameter, itemCode1, itemCode2, identCode1, identCode2, isoNo, connection) { return __awaiter(void 0, void 0, void 0, function () {
             var CONNECTION, _a, id, error_1;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -59,10 +59,10 @@ exports.jointServices = {
                     case 3:
                         _b.trys.push([3, 5, 6, 7]);
                         id = (0, uuid_1.v4)();
-                        return [4 /*yield*/, CONNECTION.query(joint_1.jointQuerys.insert, [id, userId, jointNo, shopField, diameter, itemCode1, itemCode2, identCode1, identCode2, isoNo])];
+                        return [4 /*yield*/, CONNECTION.query(joint_1.jointQuerys.insert, [id, userId, jointNo, shopField, diameter, itemCode1, itemCode2, identCode1, identCode2, projectId, isoNo])];
                     case 4:
                         _b.sent();
-                        return [3 /*break*/, 7];
+                        return [2 /*return*/, id];
                     case 5:
                         error_1 = _b.sent();
                         throw error_1;
@@ -75,7 +75,7 @@ exports.jointServices = {
                 }
             });
         }); },
-        upload: function (userId, arrayOfData, connection) { return __awaiter(void 0, void 0, void 0, function () {
+        upload: function (userId, projectId, arrayOfData, connection) { return __awaiter(void 0, void 0, void 0, function () {
             var CONNECTION, _a, errorOccured, errorLog, error_2;
             return __generator(this, function (_b) {
                 switch (_b.label) {
@@ -88,56 +88,67 @@ exports.jointServices = {
                         _b.label = 2;
                     case 2:
                         CONNECTION = _a;
-                        errorOccured = 0;
+                        errorOccured = 1;
                         errorLog = [];
                         _b.label = 3;
                     case 3:
-                        _b.trys.push([3, 5, 6, 7]);
-                        return [4 /*yield*/, Promise.all(arrayOfData.map(function (items) { return __awaiter(void 0, void 0, void 0, function () {
-                                var id, error_3;
-                                return __generator(this, function (_a) {
-                                    switch (_a.label) {
-                                        case 0:
-                                            _a.trys.push([0, 2, , 3]);
-                                            id = (0, uuid_1.v4)();
-                                            return [4 /*yield*/, CONNECTION.query(joint_1.jointQuerys.insert, [
-                                                    id,
-                                                    userId,
-                                                    items.JOINT_NO,
-                                                    items["S/F"],
-                                                    items.DB,
-                                                    items.ITEM_CODE1,
-                                                    items.ITEM_CODE2,
-                                                    items.IDENT_CODE1,
-                                                    items.IDENT_CODE2,
-                                                    items.ISO_NO,
-                                                ])];
-                                        case 1:
-                                            _a.sent();
-                                            return [3 /*break*/, 3];
-                                        case 2:
-                                            error_3 = _a.sent();
-                                            errorLog.push({ no: errorOccured++, message: error_3.message });
-                                            return [3 /*break*/, 3];
-                                        case 3: return [2 /*return*/];
-                                    }
-                                });
-                            }); }))];
+                        _b.trys.push([3, 9, 10, 11]);
+                        if (!!connection) return [3 /*break*/, 5];
+                        return [4 /*yield*/, CONNECTION.beginTransaction()];
                     case 4:
                         _b.sent();
-                        return [2 /*return*/, {
-                                successRate: ((arrayOfData.length - errorOccured) / arrayOfData.length) * 100,
-                                errorLog: errorLog,
-                            }];
-                    case 5:
+                        _b.label = 5;
+                    case 5: return [4 /*yield*/, Promise.all(arrayOfData.map(function (items) { return __awaiter(void 0, void 0, void 0, function () {
+                            var id, error_3;
+                            return __generator(this, function (_a) {
+                                switch (_a.label) {
+                                    case 0:
+                                        _a.trys.push([0, 2, , 3]);
+                                        id = (0, uuid_1.v4)();
+                                        return [4 /*yield*/, CONNECTION.query(joint_1.jointQuerys.insert, [
+                                                id,
+                                                userId,
+                                                items.JOINT_NO,
+                                                items["S/F"],
+                                                items.DB,
+                                                items.ITEM_CODE1,
+                                                items.ITEM_CODE2,
+                                                items.IDENT_CODE1,
+                                                items.IDENT_CODE2,
+                                                projectId,
+                                                items.ISO_NO,
+                                            ])];
+                                    case 1:
+                                        _a.sent();
+                                        return [3 /*break*/, 3];
+                                    case 2:
+                                        error_3 = _a.sent();
+                                        errorLog.push({ no: errorOccured++, message: error_3.message });
+                                        return [3 /*break*/, 3];
+                                    case 3: return [2 /*return*/];
+                                }
+                            });
+                        }); }))];
+                    case 6:
+                        _b.sent();
+                        if (!!connection) return [3 /*break*/, 8];
+                        return [4 /*yield*/, CONNECTION.commit()];
+                    case 7:
+                        _b.sent();
+                        _b.label = 8;
+                    case 8: return [2 /*return*/, {
+                            successRate: "".concat(((arrayOfData.length - errorOccured) / arrayOfData.length * 100).toFixed(2), "%"),
+                            // errorLog,
+                        }];
+                    case 9:
                         error_2 = _b.sent();
                         throw error_2;
-                    case 6:
+                    case 10:
                         if (!connection && CONNECTION) {
                             CONNECTION.release();
                         }
                         return [7 /*endfinally*/];
-                    case 7: return [2 /*return*/];
+                    case 11: return [2 /*return*/];
                 }
             });
         }); },
@@ -240,8 +251,8 @@ exports.jointServices = {
             });
         }); },
     },
-    get: function (isometricId, connection) { return __awaiter(void 0, void 0, void 0, function () {
-        var CONNECTION, _a, data, error_7;
+    edit: function (userId, jointId, jointNo, shopField, diameter, itemCode1, itemCode2, identCode1, identCode2, heatNo1, heatNo2, connection) { return __awaiter(void 0, void 0, void 0, function () {
+        var CONNECTION, _a, error_7;
         return __generator(this, function (_b) {
             switch (_b.label) {
                 case 0:
@@ -256,10 +267,10 @@ exports.jointServices = {
                     _b.label = 3;
                 case 3:
                     _b.trys.push([3, 5, 6, 7]);
-                    return [4 /*yield*/, CONNECTION.query(joint_1.jointQuerys.get, [isometricId])];
+                    return [4 /*yield*/, CONNECTION.query(joint_1.jointQuerys.edit, [userId, jointNo, shopField, diameter, itemCode1, itemCode2, identCode1, identCode2, heatNo1, heatNo2, jointId])];
                 case 4:
-                    data = (_b.sent())[0];
-                    return [2 /*return*/, data];
+                    _b.sent();
+                    return [3 /*break*/, 7];
                 case 5:
                     error_7 = _b.sent();
                     throw error_7;
@@ -272,4 +283,38 @@ exports.jointServices = {
             }
         });
     }); },
+    get: {
+        perIsometric: function (isometricId, connection) { return __awaiter(void 0, void 0, void 0, function () {
+            var CONNECTION, _a, data, error_8;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = connection;
+                        if (_a) return [3 /*break*/, 2];
+                        return [4 /*yield*/, db_1.SNC.getConnection()];
+                    case 1:
+                        _a = (_b.sent());
+                        _b.label = 2;
+                    case 2:
+                        CONNECTION = _a;
+                        _b.label = 3;
+                    case 3:
+                        _b.trys.push([3, 5, 6, 7]);
+                        return [4 /*yield*/, CONNECTION.query(joint_1.jointQuerys.get, [isometricId])];
+                    case 4:
+                        data = (_b.sent())[0];
+                        return [2 /*return*/, data];
+                    case 5:
+                        error_8 = _b.sent();
+                        throw error_8;
+                    case 6:
+                        if (!connection && CONNECTION) {
+                            CONNECTION.release();
+                        }
+                        return [7 /*endfinally*/];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        }); },
+    },
 };
