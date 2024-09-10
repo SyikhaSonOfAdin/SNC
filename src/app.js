@@ -6,6 +6,7 @@ const cors = require('cors');
 const { userRouter } = require('./routes/user');
 const { projectRouter } = require('./routes/project');
 const { isometricRouter } = require('./routes/isometric');
+const { jointRouter } = require('./routes/joint');
 
 const app = express();
 const port = 3000;
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, '')));
 app.use("/isometric", isometricRouter)
 app.use("/company", companyRouter)
 app.use("/project", projectRouter)
+app.use("/joint", jointRouter)
 app.use("/user", userRouter)
 
 app.listen(process.env.PORT || port, () => {
