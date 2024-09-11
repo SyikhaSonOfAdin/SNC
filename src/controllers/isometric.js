@@ -1,7 +1,7 @@
-const { SNC } = require("../config/db");
-const { excelServices } = require("../services/excel");
 const { isometricServices } = require("../services/isometric");
+const { excelServices } = require("../services/excel");
 const { jointServices } = require("../services/joint");
+const { SNC } = require("../config/db");
 
 const isometricController = {
     add: {
@@ -34,6 +34,7 @@ const isometricController = {
                     return res.status(200).json({
                         message: "Upload Successfully",
                         data: [{
+                            file: req.file,
                             isometric,
                             joint
                         }]
@@ -46,6 +47,70 @@ const isometricController = {
                 } finally {
                     connection.release()
                 }
+            } catch (error) {
+                return res.status(500).json({
+                    message: error.message
+                })
+            }
+        }
+    },
+    delete: {
+        all: async (req, res, next) => {
+            const { projectId } = req.body
+            if (!projectId) return res.status(400).json({ message: "Invalid Parameter" })
+            try {
+                await isometricServices.delete.all(projectId)
+                return res.status(200).json({
+                    message: "Isometric deleted Successfully",
+                    data: []
+                })
+            } catch (error) {
+                return res.status(500).json({
+                    message: error.message
+                })
+            }
+        },
+        onlyOne: async (req, res, next) => {
+            const { isometricId } = req.body
+            if (!isometricId) return res.status(400).json({ message: "Invalid Parameter" })
+            try {
+                await isometricServices.delete.onlyOne(isometricId)
+                return res.status(200).json({
+                    message: "Isometric deleted Successfully",
+                    data: []
+                })
+            } catch (error) {
+                return res.status(500).json({
+                    message: error.message
+                })
+            }
+        }
+    },
+    edit: async (req, res, next) => {
+        const { isoNo, lineNo, userId, isometricId } = req.body
+        if (!isoNo || !lineNo || !isometricId) return res.status(400).json({ message: "Invalid Parameter" })
+        try {
+            await isometricServices.edit(isoNo, lineNo, userId, isometricId)
+            return res.status(200).json({
+                message: "Isometric edited Successfully",
+                data: []
+            })
+        } catch (error) {
+            return res.status(500).json({
+                message: error.message
+            })
+        }
+    },
+    get: {
+        perProject: async (req, res, next) => {
+            const { projectId, page, perPage } = req.body
+            if (!projectId || !page || !perPage) return res.status(400).json({ message: "Invalid Parameter" })
+            try {
+                const data = await isometricServices.get.perProject(projectId, page, perPage)
+                return res.status(200).json({
+                    message: "Isometric edited Successfully",
+                    data: data
+                })
             } catch (error) {
                 return res.status(500).json({
                     message: error.message

@@ -207,7 +207,7 @@ exports.isometricServices = {
             });
         }); }
     },
-    edit: function (isoNo, lineNo, userId, isoId, connection) { return __awaiter(void 0, void 0, void 0, function () {
+    edit: function (isoNo, lineNo, userId, isometricId, connection) { return __awaiter(void 0, void 0, void 0, function () {
         var CONNECTION, _a, error_6;
         return __generator(this, function (_b) {
             switch (_b.label) {
@@ -223,7 +223,7 @@ exports.isometricServices = {
                     _b.label = 3;
                 case 3:
                     _b.trys.push([3, 5, 6, 7]);
-                    return [4 /*yield*/, CONNECTION.query(isometric_1.isometricQuerys.update, [isoNo, lineNo, userId, isoId])];
+                    return [4 /*yield*/, CONNECTION.query(isometric_1.isometricQuerys.update, [isoNo, lineNo, userId, isometricId])];
                 case 4:
                     _b.sent();
                     return [3 /*break*/, 7];
@@ -239,36 +239,38 @@ exports.isometricServices = {
             }
         });
     }); },
-    get: function (projectId, page, perPage, connection) { return __awaiter(void 0, void 0, void 0, function () {
-        var CONNECTION, _a, data, error_7;
-        return __generator(this, function (_b) {
-            switch (_b.label) {
-                case 0:
-                    _a = connection;
-                    if (_a) return [3 /*break*/, 2];
-                    return [4 /*yield*/, db_1.SNC.getConnection()];
-                case 1:
-                    _a = (_b.sent());
-                    _b.label = 2;
-                case 2:
-                    CONNECTION = _a;
-                    _b.label = 3;
-                case 3:
-                    _b.trys.push([3, 5, 6, 7]);
-                    return [4 /*yield*/, CONNECTION.query(isometric_1.isometricQuerys.get, [projectId, perPage, page * perPage])];
-                case 4:
-                    data = (_b.sent())[0];
-                    return [2 /*return*/, data];
-                case 5:
-                    error_7 = _b.sent();
-                    throw error_7;
-                case 6:
-                    if (!connection && CONNECTION) {
-                        CONNECTION.release();
-                    }
-                    return [7 /*endfinally*/];
-                case 7: return [2 /*return*/];
-            }
-        });
-    }); }
+    get: {
+        perProject: function (projectId, page, perPage, connection) { return __awaiter(void 0, void 0, void 0, function () {
+            var CONNECTION, _a, data, error_7;
+            return __generator(this, function (_b) {
+                switch (_b.label) {
+                    case 0:
+                        _a = connection;
+                        if (_a) return [3 /*break*/, 2];
+                        return [4 /*yield*/, db_1.SNC.getConnection()];
+                    case 1:
+                        _a = (_b.sent());
+                        _b.label = 2;
+                    case 2:
+                        CONNECTION = _a;
+                        _b.label = 3;
+                    case 3:
+                        _b.trys.push([3, 5, 6, 7]);
+                        return [4 /*yield*/, CONNECTION.query(isometric_1.isometricQuerys.get, [projectId, perPage, page * perPage])];
+                    case 4:
+                        data = (_b.sent())[0];
+                        return [2 /*return*/, data];
+                    case 5:
+                        error_7 = _b.sent();
+                        throw error_7;
+                    case 6:
+                        if (!connection && CONNECTION) {
+                            CONNECTION.release();
+                        }
+                        return [7 /*endfinally*/];
+                    case 7: return [2 /*return*/];
+                }
+            });
+        }); }
+    }
 };

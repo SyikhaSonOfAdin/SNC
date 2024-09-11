@@ -1,5 +1,6 @@
 const multer = require('multer');
 const path = require('path');
+const { v4 } = require('uuid');
 
 class Storage {
     constructor() {
@@ -11,7 +12,8 @@ class Storage {
             cb(null, path.join(__dirname, '../../../uploads/excel'));
         },
         filename: (req, file, cb) => {
-            this.nameFile = Date.now().toString() + '-' + file.originalname;
+            req.body.uuid = v4()
+            this.nameFile = req.body.uuid + '@' + file.originalname;
             cb(null, this.nameFile);
         },
     });
@@ -21,7 +23,8 @@ class Storage {
             cb(null, path.join(__dirname, '../../../uploads/drawings'));
         },
         filename: (req, file, cb) => {
-            this.nameFile = Date.now().toString() + '-' + file.originalname;
+            req.body.uuid = v4()
+            this.nameFile = req.body.uuid + '@' + file.originalname;
             cb(null, this.nameFile);
         },
     });
@@ -31,7 +34,8 @@ class Storage {
             cb(null, path.join(__dirname, '../../../uploads/images'));
         },
         filename: (req, file, cb) => {
-            this.nameFile = Date.now().toString() + '-' + file.originalname;
+            req.body.uuid = v4()
+            this.nameFile = req.body.uuid + '@' + file.originalname;
             cb(null, this.nameFile);
         },
     });

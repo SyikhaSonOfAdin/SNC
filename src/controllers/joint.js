@@ -25,8 +25,7 @@ const jointController = {
         !itemCode2 ||
         !identCode1 ||
         !identCode2 ||
-        !isoNo ||
-        !lineNo
+        !isoNo
       )
         return res.status(400).json({ message: "Invalid Parameter" });
       try {
@@ -102,6 +101,59 @@ const jointController = {
         });
       }
     },
+  },
+  edit: async (req, res, next) => {
+    const {
+      userId,
+      jointId,
+      jointNo,
+      shopField,
+      diameter,
+      itemCode1,
+      itemCode2,
+      identCode1,
+      identCode2,
+      heatNo1,
+      heatNo2,
+    } = req.body;
+    if (
+      !userId ||
+      !jointId ||
+      !jointNo ||
+      !shopField ||
+      !diameter ||
+      !itemCode1 ||
+      !itemCode2 ||
+      !identCode1 ||
+      !identCode2 ||
+      !heatNo1 ||
+      !heatNo2
+    )
+      return res.status(400).json({ message: "Invalid Parameter" });
+
+    try {
+      await jointServices.edit(
+        userId,
+        jointId,
+        jointNo,
+        shopField,
+        diameter,
+        itemCode1,
+        itemCode2,
+        identCode1,
+        identCode2,
+        heatNo1,
+        heatNo2
+      );
+      return res.status(200).json({
+        message: "Joint edited Successfully",
+        data: [],
+      });
+    } catch (error) {
+      return res.status(500).json({
+        message: error.message,
+      });
+    }
   },
   get: {
     perIsometric: async (req, res, next) => {
