@@ -22,3 +22,7 @@ const drawingController = {
         }
     }
 }
+
+module.exports = {
+    drawingController
+}
