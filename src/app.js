@@ -7,12 +7,13 @@ const { userRouter } = require('./routes/user');
 const { projectRouter } = require('./routes/project');
 const { isometricRouter } = require('./routes/isometric');
 const { jointRouter } = require('./routes/joint');
+const { drawingRouter } = require('./routes/drawing');
 
 const app = express();
 const port = 3000;
 
 const corsOptions = {
-    origin: 'https://snc.syikha.com', 
+    origin: '*' || 'https://snc.syikha.com', 
     optionsSuccessStatus: 200 
 };
 
@@ -23,6 +24,7 @@ app.use(express.static(path.join(__dirname, '')));
 
 app.use("/isometric", isometricRouter)
 app.use("/company", companyRouter)
+app.use("/drawing", drawingRouter)
 app.use("/project", projectRouter)
 app.use("/joint", jointRouter)
 app.use("/user", userRouter)

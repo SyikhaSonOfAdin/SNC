@@ -1,6 +1,8 @@
+const unzipper = require('unzipper');
 const multer = require('multer');
-const path = require('path');
 const { v4 } = require('uuid');
+const fs = require('fs-extra');
+const path = require('path');
 
 class Storage {
     constructor() {
