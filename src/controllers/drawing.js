@@ -79,6 +79,7 @@ const drawingController = {
 
                     return res.status(200).json({ message: "Drawings uploaded successfully", data: log });
                 }
+
             }
             res.status(200).json({ message: "Chunk uploaded successfully" });
         }
