@@ -81,78 +81,146 @@ exports.drawingServices = {
                 }
             });
         }); },
-        upload: function (userId, projectId, arrayOfData, connection) { return __awaiter(void 0, void 0, void 0, function () {
-            var CONNECTION, _a, errorLog, errorOccured, error_2;
-            return __generator(this, function (_b) {
-                switch (_b.label) {
-                    case 0:
-                        _a = connection;
-                        if (_a) return [3 /*break*/, 2];
-                        return [4 /*yield*/, db_1.SNC.getConnection()];
-                    case 1:
-                        _a = (_b.sent());
-                        _b.label = 2;
-                    case 2:
-                        CONNECTION = _a;
-                        errorLog = [];
-                        errorOccured = 1;
-                        _b.label = 3;
-                    case 3:
-                        _b.trys.push([3, 9, 10, 11]);
-                        if (!!connection) return [3 /*break*/, 5];
-                        return [4 /*yield*/, CONNECTION.beginTransaction()];
-                    case 4:
-                        _b.sent();
-                        _b.label = 5;
-                    case 5: return [4 /*yield*/, Promise.all(arrayOfData.map(function (items) { return __awaiter(void 0, void 0, void 0, function () {
-                            var id, error_3;
-                            return __generator(this, function (_a) {
-                                switch (_a.label) {
-                                    case 0:
-                                        _a.trys.push([0, 2, , 3]);
-                                        id = (0, uuid_1.v4)();
-                                        return [4 /*yield*/, CONNECTION.query(drawing_1.drawingQuerys.insert.upload, [
-                                                id,
-                                                userId,
-                                                items.FILE_NAME,
-                                                items.VERSION,
-                                                projectId,
-                                                items.ISO_NO,
-                                            ])];
-                                    case 1:
-                                        _a.sent();
-                                        return [3 /*break*/, 3];
-                                    case 2:
-                                        error_3 = _a.sent();
-                                        errorLog.push({ no: errorOccured++, message: error_3.message, isometricNumber: items.ISO_NO });
-                                        return [3 /*break*/, 3];
-                                    case 3: return [2 /*return*/];
-                                }
-                            });
-                        }); }))];
-                    case 6:
-                        _b.sent();
-                        if (!!connection) return [3 /*break*/, 8];
-                        return [4 /*yield*/, CONNECTION.commit()];
-                    case 7:
-                        _b.sent();
-                        _b.label = 8;
-                    case 8: return [2 /*return*/, {
-                            successRate: "".concat((((arrayOfData.length - errorOccured) / arrayOfData.length) *
-                                100).toFixed(2), "%"),
-                            errorLog: errorLog
-                        }];
-                    case 9:
-                        error_2 = _b.sent();
-                        throw error_2;
-                    case 10:
-                        if (!connection && CONNECTION) {
-                            CONNECTION.release();
-                        }
-                        return [7 /*endfinally*/];
-                    case 11: return [2 /*return*/];
-                }
-            });
-        }); },
+        upload: {
+            onlyOne: function (userId, projectId, fileName, isoNo, version, connection) { return __awaiter(void 0, void 0, void 0, function () {
+                var CONNECTION, _a, id, error_2;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            _a = connection;
+                            if (_a) return [3 /*break*/, 2];
+                            return [4 /*yield*/, db_1.SNC.getConnection()];
+                        case 1:
+                            _a = (_b.sent());
+                            _b.label = 2;
+                        case 2:
+                            CONNECTION = _a;
+                            _b.label = 3;
+                        case 3:
+                            _b.trys.push([3, 5, 6, 7]);
+                            id = (0, uuid_1.v4)();
+                            return [4 /*yield*/, CONNECTION.query(drawing_1.drawingQuerys.insert.onePerOne, [
+                                    id,
+                                    userId,
+                                    fileName,
+                                    version,
+                                    projectId,
+                                    isoNo,
+                                ])];
+                        case 4:
+                            _b.sent();
+                            return [2 /*return*/, {
+                                    fileName: fileName,
+                                    isometricNumber: isoNo,
+                                    version: version,
+                                    status: "success",
+                                    message: "-",
+                                }];
+                        case 5:
+                            error_2 = _b.sent();
+                            return [2 /*return*/, {
+                                    fileName: fileName,
+                                    isometricNumber: isoNo,
+                                    version: version,
+                                    status: "failed",
+                                    message: error_2.message == "Column 'ISOMETRIC_ID' cannot be null" ? "Isometric Not Found" : error_2.message,
+                                }];
+                        case 6:
+                            if (!connection && CONNECTION) {
+                                CONNECTION.release();
+                            }
+                            return [7 /*endfinally*/];
+                        case 7: return [2 /*return*/];
+                    }
+                });
+            }); },
+            oneData: function (userId, projectId, arrayOfData, connection) { return __awaiter(void 0, void 0, void 0, function () {
+                var CONNECTION, _a, log, errorOccured, error_3;
+                return __generator(this, function (_b) {
+                    switch (_b.label) {
+                        case 0:
+                            _a = connection;
+                            if (_a) return [3 /*break*/, 2];
+                            return [4 /*yield*/, db_1.SNC.getConnection()];
+                        case 1:
+                            _a = (_b.sent());
+                            _b.label = 2;
+                        case 2:
+                            CONNECTION = _a;
+                            log = [];
+                            errorOccured = 1;
+                            _b.label = 3;
+                        case 3:
+                            _b.trys.push([3, 9, 10, 11]);
+                            if (!!connection) return [3 /*break*/, 5];
+                            return [4 /*yield*/, CONNECTION.beginTransaction()];
+                        case 4:
+                            _b.sent();
+                            _b.label = 5;
+                        case 5: return [4 /*yield*/, Promise.all(arrayOfData.map(function (items) { return __awaiter(void 0, void 0, void 0, function () {
+                                var id, error_4;
+                                return __generator(this, function (_a) {
+                                    switch (_a.label) {
+                                        case 0:
+                                            _a.trys.push([0, 2, , 3]);
+                                            id = (0, uuid_1.v4)();
+                                            return [4 /*yield*/, CONNECTION.query(drawing_1.drawingQuerys.insert.upload, [
+                                                    id,
+                                                    userId,
+                                                    items.FILE_NAME,
+                                                    items.VERSION,
+                                                    projectId,
+                                                    items.ISO_NO,
+                                                ])];
+                                        case 1:
+                                            _a.sent();
+                                            log.push({
+                                                fileName: items.FILE_NAME,
+                                                isometricNumber: items.ISO_NO,
+                                                version: items.VERSION,
+                                                status: "success",
+                                                message: "-",
+                                            });
+                                            return [3 /*break*/, 3];
+                                        case 2:
+                                            error_4 = _a.sent();
+                                            errorOccured++;
+                                            log.push({
+                                                fileName: items.FILE_NAME,
+                                                isometricNumber: items.ISO_NO,
+                                                version: items.VERSION,
+                                                status: "failed",
+                                                message: error_4.message,
+                                            });
+                                            return [3 /*break*/, 3];
+                                        case 3: return [2 /*return*/];
+                                    }
+                                });
+                            }); }))];
+                        case 6:
+                            _b.sent();
+                            if (!!connection) return [3 /*break*/, 8];
+                            return [4 /*yield*/, CONNECTION.commit()];
+                        case 7:
+                            _b.sent();
+                            _b.label = 8;
+                        case 8: return [2 /*return*/, {
+                                successRate: "".concat((((arrayOfData.length - errorOccured) / arrayOfData.length) *
+                                    100).toFixed(2), "%"),
+                                log: log,
+                            }];
+                        case 9:
+                            error_3 = _b.sent();
+                            throw error_3;
+                        case 10:
+                            if (!connection && CONNECTION) {
+                                CONNECTION.release();
+                            }
+                            return [7 /*endfinally*/];
+                        case 11: return [2 /*return*/];
+                    }
+                });
+            }); },
+        },
     },
 };

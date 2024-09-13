@@ -47,11 +47,10 @@ const drawingController = {
                 }
                 writeStream.end();
 
-                // Tunggu hingga semua data selesai ditulis ke file
                 await new Promise((resolve) => writeStream.on('finish', resolve));
 
-                // Jika file yang diunggah adalah file ZIP, lakukan ekstraksi
                 if (path.extname(fileName) === '.zip') {
+                    const log = []
                     const connection = await SNC.getConnection()
                     const extractTempDir = path.join(__dirname, '../../../uploads/drawing', projectId, uuid);
 
@@ -60,29 +59,25 @@ const drawingController = {
                         .promise();
                     const extractedFiles = await fs.readdir(extractTempDir);
                     await fs.ensureDir(finalDir);
-                    const names = extractedFiles.map((file) => {
-                        const underscoreIndex = file.indexOf('_');
-                        const version = (underscoreIndex !== -1 && underscoreIndex < file.lastIndexOf('.'))
-                            ? file.substring(underscoreIndex + 1, file.lastIndexOf('.'))
-                            : "0";
-                        return {
-                            FILE_NAME: file,
-                            ISO_NO: path.parse(file).name,
-                            VERSION: version
-                        }
-                    })
-                    const result = await drawingServices.add.upload(userId, projectId, names)
-                    console.log(result)
-                    for (const extractedFile of extractedFiles) {
+                    await connection.beginTransaction()
+                    await Promise.all(extractedFiles.map(async (extractedFile) => {
                         const oldFilePath = path.join(extractTempDir, extractedFile);
                         const newFileName = v4() + "@" + extractedFile;
-                        const newFilePath = path.join(extractTempDir, newFileName);
-
-                        await fs.move(oldFilePath, path.join(finalDir, newFileName));
-                    }
-
+                        const underscoreIndex = extractedFile.indexOf('_');
+                        const version = (underscoreIndex !== -1 && underscoreIndex < extractedFile.lastIndexOf('.')) ? extractedFile.substring(underscoreIndex + 1, extractedFile.lastIndexOf('.')) : "0";
+                        try {
+                            const response = await drawingServices.add.upload.onlyOne(userId, projectId, newFileName, path.parse(extractedFile).name, version, connection)
+                            log.push(response)
+                            if (response.status == "success") await fs.move(oldFilePath, path.join(finalDir, newFileName))
+                        } catch (error) {
+                            console.log(error.message)
+                        }
+                    }))
+                    await connection.commit()
                     await fs.remove(extractTempDir);
                     await fs.unlink(finalFilePath);
+
+                    return res.status(200).json({ message: "Drawings uploaded successfully", data: log });
                 }
 
             }
