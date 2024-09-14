@@ -1,5 +1,5 @@
+import { FieldPacket, PoolConnection, RowDataPacket } from "mysql2/promise";
 import { drawingQuerys } from "../models/drawing";
-import { PoolConnection } from "mysql2/promise";
 import { drawing } from "../utils/customTypes";
 import { SNC } from "../config/db";
 import { v4 } from "uuid";
@@ -66,7 +66,12 @@ export const drawingServices = {
             isometricNumber: isoNo,
             version: version,
             status: "failed",
-            message: error.message == "Column 'ISOMETRIC_ID' cannot be null" ? "Isometric Not Found" : error.message,
+            message:
+              error.message == "Column 'ISOMETRIC_ID' cannot be null"
+                ? "Isometric Not Found"
+                : error.message.includes("Duplicate entry")
+                ? "Duplicate entry"
+                : error.message,
           };
         } finally {
           if (!connection && CONNECTION) {
@@ -112,7 +117,7 @@ export const drawingServices = {
                   message: "-",
                 });
               } catch (error) {
-                errorOccured++
+                errorOccured++;
                 log.push({
                   fileName: items.FILE_NAME,
                   isometricNumber: items.ISO_NO,
@@ -139,6 +144,57 @@ export const drawingServices = {
           }
         }
       },
+    },
+  },
+  delete: {
+    onlyOne: async (drawingId: string, connection?: PoolConnection) => {
+      const CONNECTION: PoolConnection =
+        connection || (await SNC.getConnection());
+      try {
+        await CONNECTION.query(drawingQuerys.delete.onlyOne, [drawingId]);
+      } catch (error) {
+        throw error;
+      } finally {
+        if (!connection && CONNECTION) {
+          CONNECTION.release();
+        }
+      }
+    },
+  },
+  get: {
+    onlyOne: async (drawingId: string, connection?: PoolConnection) => {
+      const CONNECTION: PoolConnection =
+        connection || (await SNC.getConnection());
+      try {
+        const [data]: [RowDataPacket[], FieldPacket[]] = await CONNECTION.query(
+          drawingQuerys.get.onlyOne,
+          [drawingId]
+        );
+        if (data.length > 0) return data[0] as drawing;
+      } catch (error) {
+        throw error;
+      } finally {
+        if (!connection && CONNECTION) {
+          CONNECTION.release();
+        }
+      }
+    },
+    perIsometric: async (isometricId: string, connection?: PoolConnection) => {
+      const CONNECTION: PoolConnection =
+        connection || (await SNC.getConnection());
+      try {
+        const [data]: [RowDataPacket[], FieldPacket[]] = await CONNECTION.query(
+          drawingQuerys.get.perIsometric,
+          [isometricId]
+        );
+        if (data.length > 0) return data[0] as drawing;
+      } catch (error) {
+        throw error;
+      } finally {
+        if (!connection && CONNECTION) {
+          CONNECTION.release();
+        }
+      }
     },
   },
 };

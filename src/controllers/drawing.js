@@ -1,10 +1,10 @@
 const { drawingServices } = require("../services/drawing");
 const { storageServices } = require("../services/storage");
+const { SNC } = require("../config/db");
 const unzipper = require('unzipper');
+const { v4 } = require("uuid");
 const fs = require('fs-extra');
 const path = require('path');
-const { v4 } = require("uuid");
-const { SNC } = require("../config/db");
 
 const drawingController = {
     add: {
@@ -79,11 +79,49 @@ const drawingController = {
 
                     return res.status(200).json({ message: "Drawings uploaded successfully", data: log });
                 }
-
             }
             res.status(200).json({ message: "Chunk uploaded successfully" });
         }
+    },
+    download: {
+        onlyOne: async (req, res, next) => {
+            const projectId = req.params.projectId
+            const drawingId = req.query.dId
+            const userId = req.query.uId
+            if (!projectId || !userId || !drawingId) return res.status(400).json({ message: "Invalid Parameter" })
+            try {
+                const drawing = await drawingServices.get.onlyOne(drawingId)
 
+                if (!drawing) return res.status(404).json({ message: "Drawing Not Found" })
+
+                const filePath = path.join(__dirname, "../../../uploads/drawing", projectId, drawing.FILE_NAME)
+
+                res.sendFile(filePath, drawing.FILE_NAME.split('@')[1], (error) => {
+                    if (error) return res.status(500).json({ message: error.message })
+                })
+            } catch (error) {
+                return res.status(500).json({
+                    message: error.message
+                })
+            }
+        }
+    },
+    delete: {
+        onlyOne: async (req, res, next) => {
+            const { projectId, userId, drawingId } = req.body
+            if (!projectId || !userId || !drawingId) return res.status(400).json({ message: "Invalid Parameter" })
+            try {
+                await drawingServices.delete.onlyOne(drawingId)
+                return res.status(200).json({
+                    message: "Drawing deleted Successfully",
+                    data: []
+                })
+            } catch (error) {
+                return res.status(500).json({
+                    message: error.message
+                })
+            }
+        }
     }
 }
 

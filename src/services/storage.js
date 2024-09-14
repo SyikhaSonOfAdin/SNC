@@ -22,7 +22,7 @@ class Storage {
 
     #storagePDF = multer.diskStorage({
         destination: (req, file, cb) => {
-            cb(null, path.join(__dirname, '../../../uploads/drawings'));
+            cb(null, path.join(__dirname, '../../../uploads/drawing'));
         },
         filename: (req, file, cb) => {
             req.body.uuid = v4()
