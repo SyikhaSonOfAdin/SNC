@@ -103,12 +103,15 @@ const isometricController = {
     },
     get: {
         perProject: async (req, res, next) => {
-            const { projectId, page, perPage } = req.body
+            const projectId = req.params.projectId
+            const perPage = req.query.perPage
+            const page = req.query.page
+
             if (!projectId || !page || !perPage) return res.status(400).json({ message: "Invalid Parameter" })
             try {
-                const data = await isometricServices.get.perProject(projectId, page, perPage)
+                const data = await isometricServices.get.perProject(projectId, parseInt(page), parseInt(perPage))
                 return res.status(200).json({
-                    message: "Isometric edited Successfully",
+                    message: "Get Isometric perProject Successfully",
                     data: data
                 })
             } catch (error) {

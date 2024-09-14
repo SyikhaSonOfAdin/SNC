@@ -9,7 +9,7 @@ router.post('/upload', storageServices.excel.single("file"), jwtServices.verifyT
 router.post('/delete-all', jwtServices.verifyToken.byHeader, isometricController.delete.all)
 router.post('/delete-one', jwtServices.verifyToken.byHeader, isometricController.delete.onlyOne)
 router.post('/edit', jwtServices.verifyToken.byHeader, isometricController.edit)
-router.get('/get-project', jwtServices.verifyToken.byQuery, isometricController.get.perProject)
+router.get('/get-project/:projectId', jwtServices.verifyToken.byQuery, isometricController.get.perProject)
 
 module.exports = {
     isometricRouter: router

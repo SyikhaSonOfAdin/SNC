@@ -316,8 +316,8 @@ exports.drawingServices = {
                     case 4:
                         data = (_b.sent())[0];
                         if (data.length > 0)
-                            return [2 /*return*/, data[0]];
-                        return [3 /*break*/, 7];
+                            return [2 /*return*/, data];
+                        return [2 /*return*/, []];
                     case 5:
                         error_7 = _b.sent();
                         throw error_7;

@@ -187,7 +187,8 @@ export const drawingServices = {
           drawingQuerys.get.perIsometric,
           [isometricId]
         );
-        if (data.length > 0) return data[0] as drawing;
+        if (data.length > 0) return data as drawing[];
+        return []
       } catch (error) {
         throw error;
       } finally {

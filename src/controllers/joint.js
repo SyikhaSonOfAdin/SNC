@@ -157,7 +157,7 @@ const jointController = {
   },
   get: {
     perIsometric: async (req, res, next) => {
-      const { isometricId } = req.body;
+      const isometricId = req.params.isometricId;
       if (!isometricId)
         return res.status(400).json({ message: "Invalid Parameter" });
       try {

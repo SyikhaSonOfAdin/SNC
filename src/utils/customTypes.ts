@@ -15,6 +15,7 @@ export type permission = {
 }
 
 export type drawing = {
+    ID: string;
     ISO_NO: string;
     VERSION: string;
     FILE_NAME: string;
